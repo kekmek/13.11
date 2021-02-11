@@ -1,0 +1,173 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+struct my_registers {
+	char my_registers_name[3];
+	int  my_registers_number;
+};
+
+void enter_registers(struct my_registers* p_my_registers);
+void add_registers(struct my_registers* p, int number_1, int number_2);
+void mov_1_registers(struct my_registers* p, int number_1, int number_2);
+void sub_registers(struct my_registers* p, int number_1, int number_2);
+void mov_2_registers(struct my_registers* p, int number_1, int number_2);
+
+int main() {
+	struct my_registers* p_my_registers = (struct my_registers*)malloc(sizeof(struct my_registers) * 4);
+	enter_registers(p_my_registers);
+
+
+	char str[80], c_tmp, str_for_number[100];
+	
+
+	while (1) {
+		int i = 0, number_1, number_2;
+
+		printf("Four registers are available: eax, ebx, ecx, edx : %d %d %d %d ", 
+			p_my_registers[0].my_registers_number, p_my_registers[1].my_registers_number,
+			p_my_registers[2].my_registers_number, p_my_registers[3].my_registers_number);
+		printf("\nEnter res to finish:\n");
+		
+		while ((c_tmp = getchar()) != '\n') {
+			if (c_tmp == 'r') {
+				goto stop;
+			}
+			str[i] = c_tmp;
+			i++; // длина строки i-1
+		}
+		//mov eax, ebx
+		//012345678910
+		if (str[9] == 'e') {
+			number_1 = str[5] - 'a';
+			number_2 = str[10] - 'a';
+
+			switch (str[0])
+			{
+			case 'm':
+				mov_1_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 'a':
+				add_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 's':
+				sub_registers(p_my_registers, number_1, number_2);
+				break;
+			}
+		}
+		// mov eax, -1
+		// 012345678910
+		if (str[9] == 45) {
+			int k = 0;
+			for ( k = 0; k < i; k++) {
+				str_for_number[k] = str[k + 10];
+			}
+			number_1 = str[5] - 'a';
+			
+			number_2 = (-1)*atoi(str_for_number);
+		
+			switch (str[0])
+			{
+			case 'm':
+				mov_2_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 'a':
+				add_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 's':
+				sub_registers(p_my_registers, number_1, number_2);
+				break;
+			}
+		}
+		//mov eax, 5
+		//0123456789
+		if (str[9] >= 49 && str[9]<= 57 ) {
+			int k;
+			for (k = 0; k < i; k++) {
+				str_for_number[k] = str[k + 9];
+			}
+			
+			number_1 = str[5] - 'a';
+			number_2 = atoi(str_for_number);
+
+			switch (str[0])
+			{
+			case 'm':
+				mov_2_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 'a':
+				add_registers(p_my_registers, number_1, number_2);
+				break;
+
+			case 's':
+				sub_registers(p_my_registers, number_1, number_2);
+				break;
+			}
+		}
+	}
+
+stop:
+
+	free(p_my_registers);
+	return 0;
+}
+
+
+void enter_registers(struct my_registers* p_my_registers) {
+
+	int i = 0, j = 0;
+
+	for (i = 0; i < 4; i++) {
+		for (j = 0; j < 3; j++) {
+			switch (j)
+			{
+			case 0:
+				p_my_registers[i].my_registers_name[j] = 'e';
+				break;
+
+			case 1:
+				p_my_registers[i].my_registers_name[j] = 'a';
+				break;
+
+			case 2:
+				p_my_registers[i].my_registers_name[j] = 'x';
+				break;
+			}
+		}
+		p_my_registers[i].my_registers_number = 0;
+		
+	}
+	return;
+}
+
+
+void sub_registers(struct my_registers* p, int number_1, int number_2) {
+	p[number_1].my_registers_number = p[number_1].my_registers_number - p[number_2].my_registers_number;
+	return;
+}
+
+
+void mov_1_registers(struct my_registers* p, int number_1, int number_2) {
+	p[number_1].my_registers_number = p[number_2].my_registers_number;
+	return;
+}
+
+
+void mov_2_registers(struct my_registers* p, int number_1, int number_2) {
+	p[number_1].my_registers_number = number_2;
+	return;
+}
+
+
+void add_registers(struct my_registers* p, int number_1, int number_2) {
+
+	p[number_1].my_registers_number = p[number_1].my_registers_number + p[number_2].my_registers_number;
+
+	return;
+}
