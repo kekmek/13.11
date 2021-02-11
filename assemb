@@ -1,3 +1,4 @@
+// вводить     mov eax, ebx    (между , и e необходим пробел) или    mov eax, 5    ,или  mov eax, -44
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
