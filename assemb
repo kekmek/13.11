@@ -1,4 +1,4 @@
-// вводить     "mov eax, ebx"    (между , и e необходим пробел) или    "mov eax, 5"    ,или  "mov eax, -44" БЕЗ КАВЫЧЕК
+// вводить     mov eax, ebx    (между , и e необходим пробел) или    mov eax, 5    ,или  mov eax, -44
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,10 +10,13 @@ struct my_registers {
 };
 
 void enter_registers(struct my_registers* p_my_registers);
-void add_registers(struct my_registers* p, int number_1, int number_2);
+void sub_1_registers(struct my_registers* p, int number_1, int number_2);
+void sub_2_registers(struct my_registers* p, int number_1, int number_2);
 void mov_1_registers(struct my_registers* p, int number_1, int number_2);
-void sub_registers(struct my_registers* p, int number_1, int number_2);
+void add_1_registers(struct my_registers* p, int number_1, int number_2);
+void add_2_registers(struct my_registers* p, int number_1, int number_2);
 void mov_2_registers(struct my_registers* p, int number_1, int number_2);
+
 
 int main() {
 	struct my_registers* p_my_registers = (struct my_registers*)malloc(sizeof(struct my_registers) * 4);
@@ -21,16 +24,16 @@ int main() {
 
 
 	char str[80], c_tmp, str_for_number[100];
-	
+
 
 	while (1) {
 		int i = 0, number_1, number_2;
 
-		printf("Four registers are available: eax, ebx, ecx, edx : %d %d %d %d ", 
+		printf("Four registers are available: eax, ebx, ecx, edx : %d %d %d %d ",
 			p_my_registers[0].my_registers_number, p_my_registers[1].my_registers_number,
 			p_my_registers[2].my_registers_number, p_my_registers[3].my_registers_number);
 		printf("\nEnter res to finish:\n");
-		
+
 		while ((c_tmp = getchar()) != '\n') {
 			if (c_tmp == 'r') {
 				goto stop;
@@ -51,11 +54,11 @@ int main() {
 				break;
 
 			case 'a':
-				add_registers(p_my_registers, number_1, number_2);
+				add_1_registers(p_my_registers, number_1, number_2);
 				break;
 
 			case 's':
-				sub_registers(p_my_registers, number_1, number_2);
+				sub_1_registers(p_my_registers, number_1, number_2);
 				break;
 			}
 		}
@@ -63,13 +66,13 @@ int main() {
 		// 012345678910
 		if (str[9] == 45) {
 			int k = 0;
-			for ( k = 0; k < i; k++) {
+			for (k = 0; k < i; k++) {
 				str_for_number[k] = str[k + 10];
 			}
 			number_1 = str[5] - 'a';
-			
-			number_2 = (-1)*atoi(str_for_number);
-		
+
+			number_2 = (-1) * atoi(str_for_number);
+
 			switch (str[0])
 			{
 			case 'm':
@@ -77,22 +80,22 @@ int main() {
 				break;
 
 			case 'a':
-				add_registers(p_my_registers, number_1, number_2);
+				add_2_registers(p_my_registers, number_1, number_2);
 				break;
 
 			case 's':
-				sub_registers(p_my_registers, number_1, number_2);
+				sub_2_registers(p_my_registers, number_1, number_2);
 				break;
 			}
 		}
 		//mov eax, 5
 		//0123456789
-		if (str[9] >= 49 && str[9]<= 57 ) {
+		if (str[9] >= 49 && str[9] <= 57) {
 			int k;
 			for (k = 0; k < i; k++) {
 				str_for_number[k] = str[k + 9];
 			}
-			
+
 			number_1 = str[5] - 'a';
 			number_2 = atoi(str_for_number);
 
@@ -103,11 +106,11 @@ int main() {
 				break;
 
 			case 'a':
-				add_registers(p_my_registers, number_1, number_2);
+				add_2_registers(p_my_registers, number_1, number_2);
 				break;
 
 			case 's':
-				sub_registers(p_my_registers, number_1, number_2);
+				sub_2_registers(p_my_registers, number_1, number_2);
 				break;
 			}
 		}
@@ -142,14 +145,19 @@ void enter_registers(struct my_registers* p_my_registers) {
 			}
 		}
 		p_my_registers[i].my_registers_number = 0;
-		
+
 	}
 	return;
 }
 
 
-void sub_registers(struct my_registers* p, int number_1, int number_2) {
+void sub_1_registers(struct my_registers* p, int number_1, int number_2) {
 	p[number_1].my_registers_number = p[number_1].my_registers_number - p[number_2].my_registers_number;
+	return;
+}
+
+void sub_2_registers(struct my_registers* p, int number_1, int number_2) {
+	p[number_1].my_registers_number = p[number_1].my_registers_number - number_2;
 	return;
 }
 
@@ -166,9 +174,16 @@ void mov_2_registers(struct my_registers* p, int number_1, int number_2) {
 }
 
 
-void add_registers(struct my_registers* p, int number_1, int number_2) {
+void add_1_registers(struct my_registers* p, int number_1, int number_2) {
 
 	p[number_1].my_registers_number = p[number_1].my_registers_number + p[number_2].my_registers_number;
+
+	return;
+}
+
+void add_2_registers(struct my_registers* p, int number_1, int number_2) {
+
+	p[number_1].my_registers_number = p[number_1].my_registers_number + number_2;
 
 	return;
 }
