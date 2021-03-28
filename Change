@@ -1,0 +1,75 @@
+global _start
+
+N equ 100
+
+section .bss
+var_read: resb N
+
+section .text
+_start:
+call asm_read
+
+mov rcx, N
+L1_cycle:
+mov rdx, N
+sub rdx, rcx
+
+call asm_change
+
+L1_if:
+loop L1_cycle
+
+call asm_write
+call asm_exit
+
+asm_change:
+cmp byte [var_read + rdx], 65
+jl L1_if
+jge L2_if
+
+L2_if:
+cmp byte [var_read + rdx], 90
+jle L3_if
+jg L4_if
+
+
+L4_if:
+cmp byte [var_read + rdx], 97
+jl L1_if
+jge L5_if
+
+L5_if:
+cmp byte [var_read + rdx], 122
+jle L6_if
+jg L1_if
+
+L6_if:
+sub byte [var_read + rdx], 32
+jmp L1_if
+
+L3_if:
+add byte [var_read + rdx], 32
+jmp L1_if
+
+
+asm_read:
+mov rax, 0
+mov rdi, 0
+mov rsi, var_read
+mov rdx, N
+syscall
+ret
+
+asm_write:
+mov rax, 1
+mov rdi, 1
+mov rsi, var_read
+mov rdx, N
+syscall
+ret
+
+asm_exit:
+mov rax, 60
+mov rdi, 0
+syscall
+ret
