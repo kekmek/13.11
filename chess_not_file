@@ -1,0 +1,97 @@
+global _start
+
+code_zero equ 48
+N equ 8
+N_2 equ 7 ; N_2 = N - 1
+N_1 equ 9 ; N_1 = N + 1
+N_3 equ 4
+
+section .bss
+var_string_01: resb N_1
+var_string_10: resb N_1
+
+section .text
+_start:
+call asm_string_01
+call asm_string_10
+
+mov rbx, N_3
+L5:
+call asm_write
+cmp rbx, code_zero
+dec rbx
+jle L4
+jg L5
+
+L4:
+call asm_exit
+
+;-------------------------------------------------------------------------------
+asm_string_01:
+
+mov rcx, N
+L1:
+mov rbx, N
+sub rbx, rcx
+
+xor rdx, rdx
+xor rax, rax
+mov rdx, 49
+mov rax, rbx
+
+and rax, rdx
+add rax, 48
+
+mov [var_string_01 + rbx], al
+loop L1
+
+inc rbx
+mov byte [var_string_01 + rbx], 10
+
+ret
+;-------------------------------------------------------------------------------
+asm_string_10:
+mov rcx, N_2
+L2:
+mov rax, 0
+mov rbx, 0
+mov rdx, 0
+
+mov rbx, N_2
+sub rbx, rcx
+mov rdx, rbx
+inc rdx
+
+mov byte al, [var_string_01 + rdx]
+mov byte [var_string_10 + rbx], al
+
+loop L2
+inc rbx
+mov byte [var_string_10 + rbx], 48
+inc rbx
+mov byte [var_string_10 + rbx], 10
+
+ret
+
+;-------------------------------------------------------------------------------
+asm_write:
+
+mov rax, 1
+mov rdi, 1
+mov rsi, var_string_01
+mov rdx, N_1
+syscall
+
+mov rax, 1
+mov rdi, 1
+mov rsi, var_string_10
+mov rdx, N_1
+syscall
+
+ret
+;-------------------------------------------------------------------------------
+asm_exit:
+mov rax, 60
+mov rdi, 0
+syscall
+ret
