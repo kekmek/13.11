@@ -102,7 +102,8 @@ void changeFile(char* name_File, char* str, int length_File){
             j++;
         }
     }
-    length_File = length_File - j;
+    length_File = length_File - j; //¯\_(ツ)_/¯
+    
 
     for(i = 0; i < length_File; i++){
     fputc(str[i], fp);
