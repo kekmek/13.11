@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define str1 "Sapere aude!"
+#define str2 "Hello World!"
+
 
 FILE* openFile(char* name_File);
 int det_length_File(FILE* fp);
@@ -17,10 +20,10 @@ int main(int argc, char * argv[]){
     char* str = getString(length_File, fp);
     
    
-    char str1[] = "Sapere aude!";
+    //char str1[] = "Sapere aude!";
     char* str1_p = str1;
 
-    char str2[] = "Hello World!";
+    //char str2[] = "Hello World!";
     char* str2_p = str2;
 
     int number = getNumber(str, str2_p);
@@ -33,6 +36,7 @@ int main(int argc, char * argv[]){
 
 
     changeStr(str, str1_p, number);
+
     changeFile(argv[1], str, length_File);
 
     for ( i = 0; i < length_File; i++) {
@@ -80,6 +84,7 @@ int getNumber(char* str, char* str2_p){
 
     if( istr == NULL){
         printf("String not found\n");
+        return 0;
     }else{
         int number = (int)(istr - str);
         return number;
@@ -102,8 +107,7 @@ void changeFile(char* name_File, char* str, int length_File){
             j++;
         }
     }
-    length_File = length_File - j; //¯\_(ツ)_/¯
-    
+    length_File = length_File - j;
 
     for(i = 0; i < length_File; i++){
     fputc(str[i], fp);
