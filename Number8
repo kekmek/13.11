@@ -1,0 +1,64 @@
+global _start
+extern printf
+extern scanf
+
+section .bss
+var_1 : resq 1
+var_2 : resq 1
+
+section .text
+_start:
+   mov rdi, format2
+   mov rsi, var_1
+   mov rax, 0
+   call scanf
+   mov rdi, format2
+   mov rsi, var_2
+   mov rax, 0
+   call scanf
+
+   push rbp 
+   mov rbp, rsp
+
+   sub rsp, 24
+
+   mov rdi, [var_1]
+   mov rsi, [var_2]
+   call func1
+    
+   add rsp, 24
+   mov rsp, rbp
+   pop rbp
+
+   mov [var_2], rax
+
+   mov rdi, format1
+   mov rsi, [var_2]
+   mov rax, 0
+   call printf
+  
+   call asm_exit
+
+func1:
+   xor rax, rax
+   mov QWORD [rbp+8], 10
+   mov QWORD [rbp+16], 10
+    
+   add rax, rdi
+   add rax, rsi
+   mov r11, QWORD [rbp+16]
+   add rax, r11
+   xor r11, r11
+   mov r11, QWORD [rbp+8]
+   add rax, r11
+  
+   ret
+	 
+asm_exit:
+   mov rax, 60
+   mov rdi, 0
+   syscall
+   ret
+    
+format1: db "%d", 10, 0 
+format2: db "%d", 0
