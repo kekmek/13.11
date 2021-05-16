@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h> 
+#include <unistd.h>
+#include <errno.h>
+
+#define jump_size 2
+#define jump_addr 0xEB
+
+void honest_func_1();
+void honest_func_2();
+void hacker_func();
+
+int main(){
+
+  honest_func_1();
+  honest_func_2();
+  hacker_func();
+  honest_func_1();
+
+  return 0;
+}
+
+void honest_func_1(){
+  printf("It's over, Anakin! I have the high ground!\n");
+}
+
+void honest_func_2(){
+  printf("You underestimate my power!\n");
+}
+
+void hacker_func(){
+  
+  unsigned long long addr_1 = (unsigned long long) &honest_func_1;
+  unsigned long long addr_2 = (unsigned long long) &honest_func_2;
+  
+  unsigned long long addr_page = (unsigned long long) &honest_func_1;
+  addr_page = (addr_page >> 12) << 12;
+  
+  size_t page_size = sysconf(_SC_PAGE_SIZE);
+  int res = mprotect((unsigned long long*) addr_page, page_size,  PROT_READ | PROT_WRITE | PROT_EXEC);
+  if( res == -1){
+	  perror("FAILURE");
+	  exit(errno);
+  }
+	else{
+	 unsigned long long change = addr_2 - addr_1 + jump_size;
+	 change = change << 8;
+  	 change = change + jump_addr;
+	 *(unsigned long long*)(&honest_func_1) = change;
+	 }
+
+  	
+  return;
+}  
+
